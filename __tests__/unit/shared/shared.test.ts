@@ -128,7 +128,7 @@ describe('generateAlternateLinks', () => {
       localeIndex: 'root',
       locales: {
         root: { label: 'English', lang: 'en-US' },
-        fr: { label: 'Français' } as any
+        fr: { label: 'Français' }
       }
     })
     const result = generateAlternateLinks(siteData, 'guide.md')
