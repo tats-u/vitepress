@@ -10,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '@siteData', replacement: resolve(dir, './shims.ts') },
+      { find: 'shared', replacement: resolve(dir, '../../src/shared') },
       { find: 'client', replacement: resolve(dir, '../../src/client') },
       { find: 'node', replacement: resolve(dir, '../../src/node') },
       {

@@ -1,6 +1,7 @@
 import { watchEffect, type Ref } from 'vue'
 import {
   createTitle,
+  generateAlternateLinks,
   mergeHead,
   type HeadConfig,
   type SiteData
@@ -74,7 +75,13 @@ export function useUpdateHead(route: Route, siteDataByRouteRef: Ref<SiteData>) {
     }
 
     updateHeadTags(
-      mergeHead(siteData.head, filterOutHeadDescription(frontmatterHead))
+      mergeHead(
+        siteData.head,
+        filterOutHeadDescription(frontmatterHead),
+        pageData
+          ? generateAlternateLinks(siteData, pageData.relativePath)
+          : []
+      )
     )
   })
 }

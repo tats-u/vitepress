@@ -10,6 +10,7 @@ import {
   EXTERNAL_URL_RE,
   createTitle,
   escapeHtml,
+  generateAlternateLinks,
   mergeHead,
   notFoundPageData,
   resolveSiteDataByRoute,
@@ -119,7 +120,8 @@ export async function renderPage(
     ...mergeHead(
       siteData.head,
       filterOutHeadDescription(pageData.frontmatter.head)
-    )
+    ),
+    ...generateAlternateLinks(siteData, page)
   ]
 
   const head = mergeHead(
