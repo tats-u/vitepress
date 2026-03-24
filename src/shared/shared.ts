@@ -203,6 +203,44 @@ export function mergeHead(...headArrays: HeadConfig[][]): HeadConfig[] {
   return merged
 }
 
+/**
+ * Generate alternate language link tags for SEO hreflang annotations.
+ * Excludes the current locale from the returned links.
+ */
+export function generateAlternateLinks(
+  siteData: SiteData,
+  relativePath: string
+): HeadConfig[] {
+  const locales = siteData.locales
+  if (!locales || Object.keys(locales).length <= 1) return []
+
+  const localeIndex =
+    siteData.localeIndex || getLocaleForPath(siteData, relativePath)
+  const currentLocale = locales[localeIndex]
+  if (!currentLocale) return []
+
+  const currentLink =
+    currentLocale.link || (localeIndex === 'root' ? '/' : `/${localeIndex}/`)
+  const pagePath = relativePath.slice(currentLink.length - 1)
+
+  return Object.entries(locales).flatMap(([key, value]) => {
+    if (key === localeIndex) return []
+    if (!value.lang) return []
+
+    const localeLink = value.link || (key === 'root' ? '/' : `/${key}/`)
+    const normalizedPagePath = pagePath
+      .replace(/(^|\/)index\.md$/, '$1')
+      .replace(/\.md$/, siteData.cleanUrls ? '' : '.html')
+    const ensuredPath = normalizedPagePath.startsWith('/')
+      ? normalizedPagePath
+      : `/${normalizedPagePath}`
+    const href =
+      siteData.base + (localeLink.replace(/\/$/, '') + ensuredPath).slice(1)
+
+    return [['link', { rel: 'alternate', hreflang: value.lang, href }]] as HeadConfig[]
+  })
+}
+
 // https://github.com/rollup/rollup/blob/fec513270c6ac350072425cc045db367656c623b/src/utils/sanitizeFileName.ts
 
 const INVALID_CHAR_REGEX = /[\u0000-\u001F"#$&*+,:;<=>?[\]^`{|}\u007F]/g
